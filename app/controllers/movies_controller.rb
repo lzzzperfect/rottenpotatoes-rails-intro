@@ -20,6 +20,8 @@ class MoviesController < ApplicationController
       when 'release_date'
         @date_header = {:order => :release_date}, 'hilite'
         @movies=Movie.order('release_date ASC')
+      else
+        @movies =Movie.all
     end
     # some more codes here
     #@movies = Movie.all #find_all_by_ratings(ordering)
