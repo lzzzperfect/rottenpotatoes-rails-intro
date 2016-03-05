@@ -11,29 +11,7 @@ class MoviesController < ApplicationController
   end
 
   def index
-    redirect = true
-    if(params["ratings"] != nil)
-      session["ratings"] = params["ratings"]
-      redirect = false
-    end
-    if(params["sort"] != nil)
-      session["sort"] = params["sort"]
-      redirect = false
-    end
-    @ratings_hash = session["ratings"]
-    @sort=session["sort"]
-
-    if(@ratings_hash != nil)
-      @movies = Movie.where(rating: @ratings_hash.keys).order(@sort!= nil ? "#{@sort} ASC" : "")
-    else
-      @movies=Movie.all(:order => @sort != nil ? "#{@sort} ASC" :"")
-    end
-    @all_ratings=Movie.select(:rating).map(&:rating).uniq
-
-    if((@ratings_hash !=nil || @sort != nil) && redirect == true)
-      redirect_to movies_path :sort=>@sort, :ratings=>@ratings_hash
-    end
-
+    @movies = Movie.all
   end
 
   def new
