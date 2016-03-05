@@ -11,23 +11,29 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = ['G','PG','PG-13','R']
-    #@movies= Movie.all #original words
-
-    sort = params[:sort]
-    case sort
-      when 'title'
-        @title_header = {:order => :title}, 'hilite'
-        @movies=Movie.order('title ASC')
-      when 'release_date'
-        @date_header = {:order => :release_date}, 'hilite'
-        @movies=Movie.order('release_date ASC')
-      else
-        params[:ratings] ? @movies=Movie.where(rating: params[:ratings].keys):
-                            @movies =Movie.all
+    redirect = true
+    if(params["ratings"] != nil)
+      session["ratings"] = params["ratings"]
+      redirect = false
     end
-    # some more codes here
-    #@movies = Movie.all #find_all_by_ratings(ordering)
+    if(params["sort"] != nil)
+      session["sort"] = params["sort"]
+      redirect = false
+    end
+    @ratings_hash = session["ratings"]
+    @sort=session["sort"]
+
+    if(@ratings_hash != nil)
+      @movies = Movie.where(rating: @ratings_hash.keys).order(@sort!= nil ? "#{@sort} ASC" : "")
+    else
+      @movies=Movie.all(:order => @sort != nil ? "#{@sort} ASC" :"")
+    end
+    @all_ratings=Movie.select(:rating).map(&:rating).uniq
+
+    if((@ratings_hash !=nil || @sort != nil) && redirect == true)
+      redirect_to movies_path :sort=>@sort, :ratings=>@ratings_hash
+    end
+
   end
 
   def new
