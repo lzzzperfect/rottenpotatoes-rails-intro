@@ -25,7 +25,7 @@ class MoviesController < ApplicationController
     if(@ratings_hash != nil)
       @movies = Movie.where(rating: @ratings_hash.keys).order(@sort!= nil ? "#{@sort} ASC" : "")
     else
-      @movies=Movie.all(:order => @sort != nil ? "#{@sort} ASC" :"")
+      @movies=Movie.all#(:order => @sort != nil ? "#{@sort} ASC" :"")
     end
     @all_ratings=Movie.select(:rating).map(&:rating).uniq
 
